@@ -67,13 +67,16 @@ int main()
        {
            continue;
        }
+       unsigned char ip_hdrlen = (*((unsigned char*)&(packet[14])) << 4);
+       ip_hdrlen = (ip_hdrlen >> 4) * 4;
+
        printf("------------------------------------------------------\n");
        printf("sm : %02x:%02x:%02x:%02x:%02x:%02x\n", packet[6], packet[7], packet[8], packet[9], packet[10], packet[11]);
        printf("dm : %02x:%02x:%02x:%02x:%02x:%02x\n", packet[0], packet[1], packet[2], packet[3], packet[4], packet[5]);
        printf("sip : %d.%d.%d.%d\n", packet[26], packet[27], packet[28], packet[29]);
        printf("dip : %d.%d.%d.%d\n", packet[30], packet[31], packet[32], packet[33]);
-       printf("sport : %d\n", ntohs(*((unsigned short*)&(packet[34]))));
-       printf("dport : %d\n", ntohs(*((unsigned short*)&(packet[36]))));
+       printf("sport : %d\n", ntohs(*((unsigned short*)&(packet[ip_hdrlen+14]))));
+       printf("dport : %d\n", ntohs(*((unsigned short*)&(packet[ip_hdrlen+16]))));
    }
    /* Print its length */
    printf("Jacked a packet with length of [%d]\n", header.len);
